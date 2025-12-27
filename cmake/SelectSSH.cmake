@@ -22,28 +22,7 @@ elseif(USE_SSH STREQUAL ON OR USE_SSH STREQUAL "libssh2")
 	list(APPEND LIBGIT2_SYSTEM_LIBS ${LIBSSH2_LIBRARIES})
 	list(APPEND LIBGIT2_PC_LIBS ${LIBSSH2_LDFLAGS})
 
-	include(CheckSourceCompiles)
-	include(CMakePushCheckState)
-		
-	if(TARGET libssh2::libssh2)
-	  cmake_push_check_state(RESET)
-	    set(CMAKE_REQUIRED_LIBRARIES libssh2::libssh2)
-	
-	    check_source_compiles(C [[
-	      #include <libssh2.h>
-	      int main(void)
-	      {
-	      	LIBSSH2_SESSION session;
-		libssh2_userauth_publickey_frommemory(&session, "Test", 4, "Test", 4, "TEST", 4, "Test");
-	        return 0;
-	      }
-	    ]] HAVE_LIBSSH2_MEMORY_CREDENTIALS)
-	  cmake_pop_check_state()
-	endif()
-	
-	if(HAVE_LIBSSH2_MEMORY_CREDENTIALS)
-		set(GIT_SSH_LIBSSH2_MEMORY_CREDENTIALS 1)
-	endif()
+	set(GIT_SSH_LIBSSH2_MEMORY_CREDENTIALS 1)
 
 	if(WIN32 AND EMBED_SSH_PATH)
 		file(GLOB SSH_SRC "${EMBED_SSH_PATH}/src/*.c")
